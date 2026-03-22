@@ -4,7 +4,7 @@ namespace StudentsAppSqlDB9Pro.Services
 {
     public interface IStudentService
     {
-        StudentReadOnlyDTO? InsertStudent(StudentReadOnlyDTO studentInsertDTO);
+        StudentReadOnlyDTO? InsertStudent(StudentInsertDTO studentInsertDTO);
 
         void UpdateStudent(StudentUpdateDTO studentUpdateDTO);
 
@@ -13,5 +13,6 @@ namespace StudentsAppSqlDB9Pro.Services
         StudentReadOnlyDTO GetStudent(int id);
 
         List<StudentReadOnlyDTO> GetAllStudents();
+        
     }
 }
