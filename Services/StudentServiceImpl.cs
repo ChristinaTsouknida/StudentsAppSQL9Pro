@@ -89,12 +89,50 @@ namespace StudentsAppSqlDB9Pro.Services
 
         public void DeleteStudent(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using TransactionScope scope = new TransactionScope();
+
+                if (_studentDAO.GetById(id) is null)
+                {
+                    throw new StudentNotFoundException($"Student with id {id} not found.");
+                }
+                _studentDAO.Delete(id);
+                _logger.LogInformation("Student with id={id} deleted successfully.", id);
+
+                scope.Complete();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Student with id={id} failed to delete. {ErrorMessage}",
+                    id, ex.Message);
+                throw;
+            }
         }
 
         public List<StudentReadOnlyDTO> GetAllStudents()
         {
-            throw new NotImplementedException();
+            List<StudentReadOnlyDTO> studentsReadOnlyDTOs = [];
+            StudentReadOnlyDTO studentReadOnlyDTO;
+
+            List<Student> students;
+
+            try
+            {
+                students = _studentDAO.GetAll();
+                foreach (Student student in students)
+                {
+                    studentReadOnlyDTO = _mapper.Map<StudentReadOnlyDTO>(student);
+                    studentsReadOnlyDTOs.Add(studentReadOnlyDTO);
+                }
+                _logger.LogInformation("All students fetched successfully");
+                return studentsReadOnlyDTOs;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error while fetching all students. {ErrorMessage}", ex.Message);
+                throw;
+            }
         }
 
        
