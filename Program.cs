@@ -1,4 +1,7 @@
+using Serilog;
+using StudentsAppSqlDB9Pro.Configuration;
 using StudentsAppSqlDB9Pro.Core;
+using StudentsAppSqlDB9Pro.DAO;
 
 namespace WebApplication1
 {
@@ -8,13 +11,33 @@ namespace WebApplication1
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Host.UseSerilog((context, config) =>
+            {
+                config.ReadFrom.Configuration(context.Configuration);
+            });
+
+            builder.Services.AddAutoMapper(cfg  => cfg.AddProfile<MapperConfig>());
+
             // Add services to the container.
             builder.Services.AddRazorPages();
 
             // Creates an instance per HTTP request.
             builder.Services.AddScoped<DBHelper>();
 
+            builder.Services.AddScoped<IStudentDAO, StudentDAOImpl>();
+
             var app = builder.Build();
+
+            app.UseSerilogRequestLogging(options =>
+            {
+                options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+                {
+
+                    diagnosticContext.Set("UserId", httpContext.User?.Identity?.Name);
+                    diagnosticContext.Set("RemoteIP", httpContext.Connection.RemoteIpAddress);
+
+                };
+            });
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
