@@ -2,6 +2,7 @@ using Serilog;
 using StudentsAppSqlDB9Pro.Configuration;
 using StudentsAppSqlDB9Pro.Core;
 using StudentsAppSqlDB9Pro.DAO;
+using StudentsAppSqlDB9Pro.Services;
 
 namespace WebApplication1
 {
@@ -23,8 +24,8 @@ namespace WebApplication1
 
             // Creates an instance per HTTP request.
             builder.Services.AddScoped<DBHelper>();
-
             builder.Services.AddScoped<IStudentDAO, StudentDAOImpl>();
+            builder.Services.AddScoped<IStudentService, StudentServiceImpl>();
 
             var app = builder.Build();
 

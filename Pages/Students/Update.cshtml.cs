@@ -12,18 +12,18 @@ namespace StudentsAppSQL9Dev.Pages.Students
         public StudentUpdateDTO? StudentUpdateDTO { get; set; } 
         public List<Error> ErrorArray { get; set; } = [];
 
-        private readonly IStudentService studentService;
+        private readonly IStudentService _studentService;
 
         public UpdateModel(IStudentService studentService)
         {
-            this.studentService = studentService;
+            this._studentService = studentService;
         }
 
         public IActionResult OnGet(int id)
         {
             try
             {
-                StudentReadOnlyDTO? studentReadOnlyDTO = studentService.GetStudent(id);
+                StudentReadOnlyDTO? studentReadOnlyDTO = _studentService.GetStudent(id);
                 StudentUpdateDTO = new StudentUpdateDTO
                 {
                     Id = studentReadOnlyDTO.Id,
@@ -48,10 +48,8 @@ namespace StudentsAppSQL9Dev.Pages.Students
             }
             try
             {
-                //StudentUpdateDTO.Id = id;
                 
-                studentService.UpdateStudent(StudentUpdateDTO!);
-                //Response.Redirect("/Students/getall");
+                _studentService.UpdateStudent(StudentUpdateDTO!);
 
                 TempData["StudentName"] = $"Student with id {StudentUpdateDTO!.Id} was successfully updated.";
 
