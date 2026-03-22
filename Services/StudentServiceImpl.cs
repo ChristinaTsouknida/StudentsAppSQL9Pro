@@ -21,7 +21,7 @@ namespace StudentsAppSqlDB9Pro.Services
 
         public StudentReadOnlyDTO? InsertStudent(StudentReadOnlyDTO studentInsertDTO)
         {
-            StudentReadOnlyDTO studentReadOnlyDTO;
+            StudentReadOnlyDTO? studentReadOnlyDTO;
 
             try
             {
@@ -37,8 +37,9 @@ namespace StudentsAppSqlDB9Pro.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("Student insertion failed for {Firstname} {Lastname}",
-                    studentInsertDTO.Firstname, studentInsertDTO.Lastname);
+                _logger.LogError("Student insertion failed for {Firstname} {Lastname}. {Errormessage}",
+                    studentInsertDTO.Firstname, studentInsertDTO.Lastname, ex.Message);
+                throw;
             }
         }
 
