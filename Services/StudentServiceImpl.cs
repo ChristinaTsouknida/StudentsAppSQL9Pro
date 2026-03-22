@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using StudentsAppSqlDB9Pro.DAO;
 using StudentsAppSqlDB9Pro.DTO;
+using StudentsAppSqlDB9Pro.Exceptions;
 using StudentsAppSqlDB9Pro.Models;
 using System.Transactions;
 
@@ -43,6 +44,30 @@ namespace StudentsAppSqlDB9Pro.Services
             }
         }
 
+        public void UpdateStudent(StudentUpdateDTO studentUpdateDTO)
+        {
+            try 
+            {
+                using TransactionScope scope = new TransactionScope();
+                if (_studentDAO.GetById(studentUpdateDTO.Id) is null)
+                {
+                    throw new StudentNotFoundException($"Student with id {studentUpdateDTO.Id} not found.");
+                }
+                Student student = _mapper.Map<Student>(studentUpdateDTO);
+                _studentDAO.Update(student);
+                _logger.LogInformation("Student {Firstname} {Lastname} updated successfully.",
+                   studentUpdateDTO.Firstname, studentUpdateDTO.Lastname);
+
+                scope.Complete();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Student update failed for {Firstname} {Lastname}. {Errormessage}",
+                    studentUpdateDTO.Firstname, studentUpdateDTO.Lastname, ex.Message);
+                throw;
+            }
+        }
+
         public void DeleteStudent(int id)
         {
             throw new NotImplementedException();
@@ -60,9 +85,6 @@ namespace StudentsAppSqlDB9Pro.Services
 
         
 
-        public void UpdateStudent(StudentUpdateDTO studentUpdateDTO)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
