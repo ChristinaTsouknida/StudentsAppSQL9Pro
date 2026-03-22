@@ -1,0 +1,17 @@
+﻿using StudentsAppSqlDB9Pro.DTO;
+
+namespace StudentsAppSqlDB9Pro.Services
+{
+    public interface IStudentService
+    {
+        StudentReadOnlyDTO? InsertStudent(StudentReadOnlyDTO studentInsertDTO);
+
+        void UpdateStudent(StudentUpdateDTO studentUpdateDTO);
+
+        void DeleteStudent(int id);
+
+        StudentReadOnlyDTO GetStudent(int id);
+
+        List<StudentReadOnlyDTO> GetAllStudents();
+    }
+}
